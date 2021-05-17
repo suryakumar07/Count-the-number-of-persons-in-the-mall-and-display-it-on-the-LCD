@@ -1,0 +1,69 @@
+#include <LiquidCrystal.h>
+LiquidCrystal lcd(13,12,8,7,4,2);
+
+int s1;
+int s2;
+int person = 0;
+int person1 = 0;
+int person_entry = 0;
+int person_exit = 0;
+int total = 0;
+
+void setup()
+   {
+ lcd.begin(16,2);
+ pinMode(A0,INPUT);
+ pinMode(A1,INPUT); 
+ pinMode(3,OUTPUT); 
+   }
+
+void loop() 
+   {
+  s1 = digitalRead(A0);
+  s2 = digitalRead(A1);
+
+  if(s1 == HIGH && s2 == LOW && person == 0)
+   {
+    person_entry = 1;
+   }
+ if(s1 == HIGH && s2 == HIGH && person_entry == 1)
+   {
+    person = 1;
+   }
+  if(s1 == LOW && s2 == HIGH && person_entry == 1 && person == 1)
+   {
+    person = 1;
+    total = total + person;
+    person_entry = 0;
+    person = 0;
+   }
+  if(s1 == LOW && s2 == HIGH && person == 0)
+   {
+    person_exit = 1;
+   }
+  if(s1 == HIGH && s2 == HIGH && person_exit == 1)
+   {
+    person = 1;
+   }
+  if(s1 == HIGH && s2 == LOW && person_exit == 1 && person == 1)
+   {
+    person = 1;
+    total = total - person;
+    person_exit = 0;
+    person = 0 ;
+   }
+  if(total <= 0)
+    {
+     digitalWrite(3, LOW);
+    }
+  else
+    {
+      digitalWrite(3, HIGH);
+    }
+   
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("NO of Person : ");
+  lcd.setCursor(0,1);
+  lcd.print(total);
+    }
